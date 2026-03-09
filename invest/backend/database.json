@@ -1,0 +1,10 @@
+{
+  "users":[
+    {"username":"k","password":"a1a3b09875f9e9acade5623e1cca680009a6c9e0452489931cfa5b0041f4d290","name":"khushi","balance":92469.00,"portfolio":[{"ticker":"GOOGL","quantity":1,"avgBuyPrice":7531.00}]},
+    {"username":"j","password":"148de9c5a7a44d19e56cd9ae1a554bf67847afb0c58f6e12fa29ac7ddfca9940","name":"john","balance":100000.00,"portfolio":[]},
+    {"username":"hi","password":"8f434346648f6b96df89dda901c5176b10a6d83961dd3c1ac88b59b2dc327aa4","name":"hi","balance":100000.00,"portfolio":[]},
+    {"username":"p","password":"8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a","name":"hi","balance":100000.00,"portfolio":[]},
+    {"username":"s","password":"252f10c83610ebca1a059c0bae8255eba2f95be4d1d7bcfa89d7248a82d9f111","name":"e","balance":100000.00,"portfolio":[]},
+    {"username":"kh","password":"8f434346648f6b96df89dda901c5176b10a6d83961dd3c1ac88b59b2dc327aa4","name":"khushii","balance":115272.00,"portfolio":[]}
+  ]
+}

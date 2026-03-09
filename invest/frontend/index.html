@@ -1,0 +1,259 @@
+and givinhg the code of html write the comment in which line what is happening human based not ai based..<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Investopedia</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <div class="noise"></div>
+
+  <!-- ===== SERVER OFFLINE BANNER ===== -->
+  <div id="offline-banner" class="offline-banner" style="display:none;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    Server Offline — Run <strong>stockmarket_server.exe</strong> to connect
+  </div>
+
+  <!-- ===== LOGIN SCREEN ===== -->
+  <section id="screen-login" class="screen active">
+    <div class="brand-mark">INV</div>
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1 class="site-title">Invest<br/><em>opedia</em></h1>
+        <p class="tagline">Simulated trading. Real strategy.</p>
+      </div>
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="login-username" placeholder="Enter your username" autocomplete="off"/>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="login-password" placeholder="••••••••"/>
+      </div>
+      <div id="login-error" class="form-error hidden">Invalid credentials. Try again.</div>
+      <button class="btn-primary" onclick="handleLogin()">Sign In</button>
+      <div class="auth-switch">
+        No account? <span class="link" onclick="goTo('screen-register')">Create one →</span>
+      </div>
+    </div>
+    <div class="ticker-bar">
+      <div class="ticker-track" id="ticker-track">
+        <span>Waiting for server...</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== REGISTER SCREEN ===== -->
+  <section id="screen-register" class="screen">
+    <div class="brand-mark">INV</div>
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1 class="site-title">Invest<br/><em>opedia</em></h1>
+        <p class="tagline">Create your portfolio account.</p>
+      </div>
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="reg-name" placeholder="John Doe"/>
+      </div>
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="reg-username" placeholder="Choose a username" autocomplete="off"/>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="reg-password" placeholder="Create a password"/>
+      </div>
+      <div id="reg-error" class="form-error hidden">Please fill in all fields.</div>
+      <div id="reg-success" class="form-success hidden">Account created! Please login now.</div>
+      <button class="btn-primary" onclick="handleRegister()">Create Account</button>
+      <div class="auth-switch">
+        Already have one? <span class="link" onclick="goTo('screen-login')">Sign in →</span>
+      </div>
+    </div>
+    <div class="ticker-bar">
+      <div class="ticker-track" id="ticker-track-2">
+        <span>Waiting for server...</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MARKET SCREEN ===== -->
+  <section id="screen-market" class="screen">
+    <aside class="sidebar">
+      <div class="sidebar-brand">INV</div>
+      <nav class="sidebar-nav">
+        <span class="nav-item active" data-tooltip="Market">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </span>
+        <span class="nav-item" data-tooltip="Portfolio">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </span>
+        <span class="nav-item" data-tooltip="Watchlist">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </span>
+      </nav>
+      <div class="sidebar-footer" onclick="handleLogout()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </div>
+    </aside>
+
+    <main class="market-main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <h2 class="page-title">Market Overview</h2>
+          <div class="live-dot">
+            <span id="live-dot-span"></span>
+            <span id="live-dot-text">CONNECTING...</span>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <div class="user-chip" id="user-chip">
+            <span class="user-avatar" id="user-avatar">J</span>
+            <span id="user-display">Trader</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Stats Row -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">Total Money</div>
+          <div class="stat-value" id="stat-balance">₹1,00,000</div>
+          <div class="stat-change positive" id="stat-balance-change">Starting Balance</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Today's Profit/Loss</div>
+          <div class="stat-value" id="stat-pnl">₹0</div>
+          <div class="stat-change neutral" id="stat-pnl-change">No trades yet</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Stocks Owned</div>
+          <div class="stat-value" id="stat-positions">0</div>
+          <div class="stat-change neutral">Holdings</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Market Status</div>
+          <div class="stat-value" style="font-size:1.1rem;" id="market-status-val">Connecting</div>
+          <div class="stat-change positive">NSE • BSE</div>
+        </div>
+      </div>
+
+      <!-- Chart Panel -->
+      <div class="chart-panel">
+        <div class="chart-controls">
+          <div class="select-wrapper">
+            <label class="select-label">Select Company</label>
+            <select id="company-select" onchange="onCompanyChange()">
+              <option value="">— Choose a company —</option>
+              <option value="AAPL">AAPL — Apple Inc.</option>
+              <option value="GOOGL">GOOGL — Google Inc.</option>
+              <option value="MSFT">MSFT — Microsoft Corp.</option>
+              <option value="TSLA">TSLA — Tesla Inc.</option>
+              <option value="AMZN">AMZN — Amazon Inc.</option>
+              <option value="NVDA">NVDA — NVIDIA Corp.</option>
+              <option value="META">META — Meta Platforms</option>
+              <option value="NFLX">NFLX — Netflix Inc.</option>
+              <option value="AMD">AMD — AMD Inc.</option>
+              <option value="INTC">INTC — Intel Corp.</option>
+            </select>
+          </div>
+          <div class="timeframe-group">
+            <button class="tf-btn active" onclick="setTimeframe(this,'1D')">1D</button>
+            <button class="tf-btn" onclick="setTimeframe(this,'1W')">1W</button>
+            <button class="tf-btn" onclick="setTimeframe(this,'1M')">1M</button>
+            <button class="tf-btn" onclick="setTimeframe(this,'3M')">3M</button>
+          </div>
+          <button class="btn-chart" id="load-chart-btn" onclick="loadChart()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Show Chart
+          </button>
+        </div>
+
+        <div class="ticker-info hidden" id="ticker-info">
+          <span class="ticker-symbol" id="ti-symbol">AAPL</span>
+          <span class="ticker-price" id="ti-price">₹0</span>
+          <span class="ticker-delta positive" id="ti-delta">+0 (0.00%)</span>
+          <span class="ticker-meta" id="ti-vol">Vol: --</span>
+          <span class="ticker-meta" id="ti-cap">Live</span>
+          <span class="ticker-meta" style="color:var(--accent2);font-size:.7rem;">● LIVE DATA</span>
+        </div>
+
+        <div class="chart-area" id="chart-area">
+          <div class="chart-placeholder" id="chart-placeholder">
+            <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48">
+              <polyline points="4 48 16 32 26 38 38 18 50 24 60 8"/>
+              <line x1="4" y1="56" x2="60" y2="56"/>
+            </svg>
+            <p>Select a company and click <strong>Show Chart</strong></p>
+          </div>
+          <canvas id="stockChart" class="hidden"></canvas>
+        </div>
+
+        <!-- Buy / Sell Panel -->
+        <div class="trade-panel" id="trade-panel" style="display:none;">
+          <div class="trade-row">
+            <div class="form-group" style="flex:1;margin-bottom:0;">
+              <label class="select-label">Quantity</label>
+              <input type="number" id="trade-qty" min="1" value="1" placeholder="No. of shares"
+                style="width:100%;padding:12px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--font-mono);font-size:.92rem;outline:none;" />
+            </div>
+            <div class="trade-cost-box">
+              <div class="select-label">Estimated Cost</div>
+              <div class="trade-cost" id="trade-cost">₹0</div>
+            </div>
+          </div>
+          <div class="trade-buttons">
+            <button class="btn-buy" onclick="handleBuy()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+              BUY STOCK
+            </button>
+            <button class="btn-sell" onclick="handleSell()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
+              SELL STOCK
+            </button>
+          </div>
+          <div id="trade-msg" class="hidden"
+            style="font-family:var(--font-mono);font-size:.82rem;padding:10px 14px;border-radius:8px;margin-top:8px;"></div>
+        </div>
+      </div>
+
+      <!-- Market Movers -->
+      <div class="movers-panel">
+        <h3 class="panel-title">Market Movers <span style="font-size:.7rem;color:var(--accent2);font-family:var(--font-mono);">● LIVE</span></h3>
+        <div class="movers-grid" id="movers-grid">
+          <div style="color:var(--muted);font-family:var(--font-mono);font-size:.8rem;padding:12px;">
+            Waiting for server data...
+          </div>
+        </div>
+      </div>
+
+      <!-- Portfolio Section -->
+      <div class="movers-panel" id="portfolio-panel">
+        <h3 class="panel-title">Your Portfolio</h3>
+        <div id="portfolio-empty" class="chart-placeholder" style="height:80px;border-radius:10px;">
+          <p style="font-size:.82rem;">No stocks yet. Buy some to get started!</p>
+        </div>
+        <table class="portfolio-table hidden" id="portfolio-table">
+          <thead>
+            <tr>
+              <th>Stock</th>
+              <th>Shares</th>
+              <th>Avg Buy Price</th>
+              <th>Current Price</th>
+              <th>P&L</th>
+            </tr>
+          </thead>
+          <tbody id="portfolio-tbody"></tbody>
+        </table>
+      </div>
+
+    </main>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
