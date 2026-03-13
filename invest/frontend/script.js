@@ -1,8 +1,8 @@
 /* =============================================
    INVESTOPEDIA — script.js
 
-   Frontend sirf localhost:8080 se baat karta hai.
-   Alpha Vantage ka kaam C++ backend karta hai.
+   Frontend only talks to localhost:8080.
+   All Alpha Vantage work is handled by the C++ backend.
 
    Browser → localhost:8080 → stockmarket.cpp → Alpha Vantage
    ============================================= */
@@ -38,7 +38,7 @@ function setServerStatus(online) {
 }
 
 // =============================================
-//  LIVE PRICES — backend se (har 2 second)
+//  LIVE PRICES — fetched from backend every 2 seconds
 // =============================================
 async function fetchLiveStocks() {
   try {
@@ -57,17 +57,17 @@ async function fetchLiveStocks() {
 }
 
 // =============================================
-//  CHART — backend se history data
+//  CHART — price history data from backend
 // =============================================
 function loadChart() {
   const ticker = document.getElementById("company-select").value;
-  if (!ticker) { alert("Pehle company select karo."); return; }
+  if (!ticker) { alert("Please select a company first."); return; }
   currentTicker = ticker;
 
   const stock = liveStockData[ticker];
   if (!stock) {
     document.getElementById("chart-placeholder").innerHTML =
-      `<p style="color:var(--red)">Server se data nahi mila. stockmarket.exe chala raha hai?</p>`;
+      `<p style="color:var(--red)">No data from server. Is stockmarket.exe running?</p>`;
     return;
   }
 
@@ -160,7 +160,7 @@ function drawChart(ticker, historyINR) {
   updateTradeCost();
 }
 
-// Live price update karo chart ke niche (chart redraw nahi)
+// Update live price strip above chart without redrawing the chart
 function updatePriceTicker() {
   const s = liveStockData[currentTicker]; if (!s) return;
   const p = Math.round(s.priceINR), c = Math.round(s.changeINR), up = c >= 0;
@@ -168,7 +168,7 @@ function updatePriceTicker() {
   const d = document.getElementById("ti-delta");
   d.textContent = `${up ? "+" : ""}${c} (${s.changePercent.toFixed(2)}%)`;
   d.className   = `ticker-delta ${up ? "positive" : "negative"}`;
-  // Live price ko chart mein add karo
+  // Append latest price point to chart data
   if (chartInstance && s.history) {
     const now = new Date();
     chartInstance.data.labels.push(now.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" }));
@@ -206,7 +206,7 @@ async function handleLogin() {
   const password = document.getElementById("login-password").value;
   const err      = document.getElementById("login-error");
   if (!username || !password) {
-    err.textContent = "Username aur password daalo.";
+    err.textContent = "Please enter your username and password.";
     err.classList.remove("hidden"); return;
   }
   try {
@@ -225,7 +225,7 @@ async function handleLogin() {
     currentUser = { username: data.username, name: data.name, balance: data.balance };
     enterMarket();
   } catch {
-    err.textContent = "Server nahi mila! stockmarket.exe chalaao pehle.";
+    err.textContent = "Server not found! Please run stockmarket.exe first.";
     err.classList.remove("hidden");
   }
 }
@@ -237,7 +237,7 @@ async function handleRegister() {
   const err      = document.getElementById("reg-error");
   const suc      = document.getElementById("reg-success");
   if (!name || !username || !password) {
-    err.textContent = "Sab fields bharo.";
+    err.textContent = "Please fill in all fields.";
     err.classList.remove("hidden");
     shake("#screen-register .auth-card"); return;
   }
@@ -250,14 +250,14 @@ async function handleRegister() {
     const data = await res.json();
     if (!data.success) { err.textContent = data.message || "Failed."; err.classList.remove("hidden"); return; }
     err.classList.add("hidden");
-    suc.textContent = "Account ban gaya! Login karo."; suc.classList.remove("hidden");
+    suc.textContent = "Account created! Please login now."; suc.classList.remove("hidden");
     setTimeout(() => {
       suc.classList.add("hidden");
       ["reg-name", "reg-username", "reg-password"].forEach(id => document.getElementById(id).value = "");
       goTo("screen-login");
     }, 1800);
   } catch {
-    err.textContent = "Server nahi mila!"; err.classList.remove("hidden");
+    err.textContent = "Server not found!"; err.classList.remove("hidden");
   }
 }
 
@@ -270,7 +270,7 @@ function handleLogout() {
     <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48">
       <polyline points="4 48 16 32 26 38 38 18 50 24 60 8"/>
       <line x1="4" y1="56" x2="60" y2="56"/>
-    </svg><p>Company select karo aur <strong>Show Chart</strong> click karo</p>`;
+    </svg><p>Select a company and click <strong>Show Chart</strong></p>`;
   document.getElementById("stockChart").classList.add("hidden");
   document.getElementById("ticker-info").classList.add("hidden");
   document.getElementById("trade-panel").style.display = "none";
@@ -387,9 +387,9 @@ document.addEventListener("DOMContentLoaded", () => {
 async function handleBuy() {
   if (!currentUser || !currentTicker) return;
   const qty = parseInt(document.getElementById("trade-qty").value);
-  if (!qty || qty <= 0) { showMsg("Valid quantity daalo.", false); return; }
+  if (!qty || qty <= 0) { showMsg("Please enter a valid quantity.", false); return; }
   const s = liveStockData[currentTicker];
-  if (!s) { showMsg("Price data nahi mila!", false); return; }
+  if (!s) { showMsg("Price data not available!", false); return; }
   const price = Math.round(s.priceINR);
   try {
     const res  = await fetch(`${API}/buy`, {
@@ -412,9 +412,9 @@ async function handleBuy() {
 async function handleSell() {
   if (!currentUser || !currentTicker) return;
   const qty = parseInt(document.getElementById("trade-qty").value);
-  if (!qty || qty <= 0) { showMsg("Valid quantity daalo.", false); return; }
+  if (!qty || qty <= 0) { showMsg("Please enter a valid quantity.", false); return; }
   const s = liveStockData[currentTicker];
-  if (!s) { showMsg("Price data nahi mila!", false); return; }
+  if (!s) { showMsg("Price data not available!", false); return; }
   const price = Math.round(s.priceINR);
   try {
     const res  = await fetch(`${API}/sell`, {
@@ -493,7 +493,7 @@ document.querySelectorAll(".screen").forEach(s => {
 });
 document.getElementById("screen-login").classList.add("active");
 
-// Har 3 second server ping — login screen pe bhi
+// Ping backend every 3 seconds — works on login screen too, before user logs in
 setInterval(async () => {
   try {
     const r = await fetch(`${API}/stocks`, { signal: AbortSignal.timeout(2000) });
