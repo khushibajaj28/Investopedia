@@ -1,0 +1,5 @@
+balance=86284.51
+AAPL=5
+AMD=50
+MSFT=10
+TSLA=15
